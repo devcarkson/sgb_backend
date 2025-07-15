@@ -1,0 +1,11 @@
+
+Django
+djangorestframework
+django-cors-headers
+requests
+python-dotenv
+Pillow
+django-filter
+drf-yasg
+django-rest-passwordreset
+psycopg2-binary

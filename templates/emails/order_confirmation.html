@@ -1,0 +1,24 @@
+<!-- templates/emails/order_confirmation.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .email-container { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; }
+        .header { background-color: #7C3AED; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .button { background-color: #7C3AED; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for your order #{{ order.order_number }}!</p>
+            <p>Total: ${{ order.total }}</p>
+            <a href="{{ FRONTEND_URL }}/orders/{{ order.order_number }}" class="button">View Order</a>
+        </div>
+    </div>
+</body>
+</html>
