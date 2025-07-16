@@ -1,103 +1,209 @@
-from rest_framework import generics, status
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from .models import Cart, CartItem, Order
-from .serializers import CartSerializer, OrderSerializer, CheckoutSerializer
+from .serializers import (
+    CartSerializer,
+    CartItemSerializer,
+    OrderSerializer,
+    CheckoutSerializer
+)
 from products.models import Product
-from payments.services import FlutterwaveService
-from orders.signals import send_order_confirmation_email
 
-class CartView(generics.RetrieveAPIView):
+class CartDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve the authenticated user's shopping cart
+    """
     serializer_class = CartSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user)
-        return cart
+        return Cart.get_or_create_cart(self.request.user)
 
-class AddToCartView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        product_id = request.data.get('product_id')
-        quantity = int(request.data.get('quantity', 1))
+class CartItemCreateView(generics.CreateAPIView):
+    """
+    Add a product to the user's cart or update quantity if already exists
+    """
+    serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-        product = get_object_or_404(Product, id=product_id)
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-
+    def perform_create(self, serializer):
+        cart = Cart.get_or_create_cart(self.request.user)
+        product = serializer.validated_data['product']
+        quantity = serializer.validated_data.get('quantity', 1)
+        
+        # Update quantity if product already in cart
         cart_item, created = CartItem.objects.get_or_create(
             cart=cart,
             product=product,
             defaults={'quantity': quantity}
         )
-
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
 
-        return Response({"detail": "Product added to cart"}, status=status.HTTP_200_OK)
 
-class UpdateCartItemView(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request, item_id):
-        quantity = int(request.data.get('quantity', 1))
-
-        cart_item = get_object_or_404(CartItem, id=item_id, cart=request.user.cart)
-
-        if quantity <= 0:
-            cart_item.delete()
-            return Response({"detail": "Item removed from cart"}, status=status.HTTP_200_OK)
-
-        cart_item.quantity = quantity
-        cart_item.save()
-
-        return Response({"detail": "Cart item updated"}, status=status.HTTP_200_OK)
-
-class RemoveFromCartView(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, item_id):
-        cart_item = get_object_or_404(CartItem, id=item_id, cart=request.user.cart)
-        cart_item.delete()
-        return Response({"detail": "Item removed from cart"}, status=status.HTTP_200_OK)
-
-class ClearCartView(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request):
-        request.user.cart.items.all().delete()
-        return Response({"detail": "Cart cleared"}, status=status.HTTP_200_OK)
-
-class CheckoutView(generics.CreateAPIView):
-    serializer_class = CheckoutSerializer
-    permission_classes = [IsAuthenticated]
-
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        order = serializer.save()
-
-        payment = FlutterwaveService.initialize_payment(order)
-
-        return Response({
-            "success": True,
-            "order": OrderSerializer(order).data,
-            "payment_url": payment.get('data', {}).get('link')
-        }, status=status.HTTP_201_CREATED)
-
-class OrderHistoryView(generics.ListAPIView):
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update quantity, or remove a cart item
+    """
+    serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user).order_by('-created_at')
+        return CartItem.objects.filter(cart__user=self.request.user)
+
+    def perform_destroy(self, instance):
+        if instance.cart.user != self.request.user:
+            raise permissions.PermissionDenied
+        instance.delete()
+
+
+class CartItemBulkUpdateView(APIView):
+    """
+    Update multiple cart items at once (for cart page)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        cart = Cart.get_or_create_cart(request.user)
+        items_data = request.data.get('items', [])
+        
+        with transaction.atomic():
+            # First validate all items
+            for item_data in items_data:
+                if 'id' not in item_data or 'quantity' not in item_data:
+                    return Response(
+                        {"detail": "Each item must have 'id' and 'quantity'"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
+                if not isinstance(item_data['quantity'], int) or item_data['quantity'] < 1:
+                    return Response(
+                        {"detail": "Quantity must be a positive integer"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
+            # Then update all items
+            updated_items = []
+            for item_data in items_data:
+                try:
+                    item = CartItem.objects.get(
+                        id=item_data['id'],
+                        cart=cart
+                    )
+                    item.quantity = item_data['quantity']
+                    item.save()
+                    updated_items.append(item)
+                except CartItem.DoesNotExist:
+                    return Response(
+                        {"detail": f"Cart item {item_data['id']} not found in your cart"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+        
+        return Response(
+            CartItemSerializer(updated_items, many=True).data,
+            status=status.HTTP_200_OK
+        )
+
+
+class OrderListView(generics.ListAPIView):
+    """
+    List all orders for the authenticated user
+    """
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)\
+            .select_related('user')\
+            .prefetch_related('items__product')\
+            .order_by('-created_at')
+
 
 class OrderDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve details of a specific order
+    """
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
-    lookup_field = 'order_number'
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user)\
+            .select_related('user')\
+            .prefetch_related('items__product')
+
+
+class CheckoutView(generics.CreateAPIView):
+    """
+    Process checkout and create an order from the cart
+    """
+    serializer_class = CheckoutSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            order = serializer.save()
+            return Response(
+                OrderSerializer(order).data,
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class ClearCartView(APIView):
+    """
+    Clear all items from the user's cart
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        cart = Cart.get_or_create_cart(request.user)
+        deleted_count, _ = cart.items.all().delete()
+        return Response(
+            {"detail": f"Removed {deleted_count} items from your cart"},
+            status=status.HTTP_200_OK
+        )
+
+
+class OrderStatusUpdateView(generics.UpdateAPIView):
+    """
+    Update order status (admin only)
+    """
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Order.objects.all()
+    lookup_field = 'order_number'
+
+    def update(self, request, *args, **kwargs):
+        order = self.get_object()
+        new_status = request.data.get('status')
+        
+        if not new_status:
+            return Response(
+                {"detail": "Status is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            order.update_status(new_status)
+            return Response(
+                OrderSerializer(order).data,
+                status=status.HTTP_200_OK
+            )
+        except ValueError as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
