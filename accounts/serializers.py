@@ -14,22 +14,20 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
-
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
     def validate(self, data):
-        user = authenticate(username=data['email'], password=data['password'])
-        if not user:
-            raise serializers.ValidationError("Invalid credentials")
-
-        refresh = RefreshToken.for_user(user)
-        return {
-            'user': {
-                'id': user.id,
-                'email': user.email,
-            },
-            'access': str(refresh.access_token),
-            'refresh': str(refresh)
-        }
+        email = data.get('email')
+        password = data.get('password')
+        
+        if email and password:
+            user = authenticate(username=email, password=password)
+            if user:
+                if not user.is_active:
+                    raise serializers.ValidationError("User account is disabled")
+                data['user'] = user
+                return data
+            raise serializers.ValidationError("Unable to log in with provided credentials")
+        raise serializers.ValidationError("Must include 'email' and 'password'")
