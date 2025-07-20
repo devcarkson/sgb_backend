@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+import logging
 
 class FlutterwaveService:
     BASE_URL = "https://api.flutterwave.com/v3"
@@ -33,7 +34,13 @@ class FlutterwaveService:
             json=payload
         )
 
-        return response.json()
+        data = response.json()
+        # Log the full response for debugging
+        logging.error(f"Flutterwave payment response: {data}")
+        # Check for payment link
+        if not data.get('status') == 'success' or not data.get('data', {}).get('link'):
+            raise Exception(f"Payment initialization failed: {data}")
+        return data
 
     @classmethod
     def verify_payment(cls, transaction_id):

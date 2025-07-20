@@ -5,6 +5,7 @@ from django.utils import timezone
 import uuid
 from accounts.models import User
 from products.models import Product
+from decimal import Decimal
 
 class Cart(models.Model):
     """
@@ -35,7 +36,7 @@ class Cart(models.Model):
     @property
     def subtotal(self):
         """Calculates the subtotal of all cart items"""
-        return sum(item.total_price for item in self.items.all())
+        return sum(Decimal(item.total_price) for item in self.items.all())
 
     @classmethod
     def get_or_create_cart(cls, user):
@@ -79,7 +80,7 @@ class CartItem(models.Model):
     @property
     def total_price(self):
         """Calculates total price for this cart item"""
-        return self.product.price * self.quantity
+        return Decimal(self.product.price) * Decimal(self.quantity)
 
 
 class Order(models.Model):
@@ -277,7 +278,7 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         """Calculate total price for this order item"""
-        return self.price * self.quantity
+        return Decimal(self.price) * Decimal(self.quantity)
 
 
 # Signal to automatically create cart when user is created

@@ -3,6 +3,7 @@ from .models import Cart, CartItem, Order, OrderItem
 from products.models import Product
 from products.serializers import ProductSerializer
 from accounts.serializers import UserSerializer
+from decimal import Decimal
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
@@ -147,8 +148,8 @@ class CheckoutSerializer(serializers.Serializer):
         
         # Calculate order totals
         subtotal = cart.subtotal
-        shipping_fee = 0 if subtotal > 50000 else 999  # Free shipping over ₦50,000
-        tax = subtotal * 0.08  # 8% tax
+        shipping_fee = Decimal('0') if subtotal > Decimal('50000') else Decimal('999')  # Free shipping over ₦50,000
+        tax = subtotal * Decimal('0.08')  # 8% tax
         total = subtotal + shipping_fee + tax
         
         # Create order
@@ -182,7 +183,7 @@ class CheckoutSerializer(serializers.Serializer):
         OrderItem.objects.bulk_create(order_items)
         
         # Clear the cart
-        cart.items.all().delete()
+        # cart.items.all().delete()  # <-- Do not clear cart here! Only clear after payment is successful
         
         # Optionally save shipping info to user profile
         if validated_data.get('save_shipping_info'):
