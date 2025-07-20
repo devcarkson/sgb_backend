@@ -165,8 +165,41 @@ class CheckoutView(generics.CreateAPIView):
         
         try:
             order = serializer.save()
+            # Payment initialization (Flutterwave only for now)
+            payment_url = None
+            reference = order.order_number
+            payment_method = order.payment_method
+            payment_response = None
+            if payment_method == 'flutterwave':
+                from payments.services import FlutterwaveService
+                try:
+                    payment_response = FlutterwaveService.initialize_payment(order)
+                    payment_url = payment_response.get('data', {}).get('link')
+                except Exception as e:
+                    return Response(
+                        {"detail": f"Payment initialization failed: {str(e)}"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:
+                return Response(
+                    {"detail": f"Payment method '{payment_method}' is not supported yet."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if not payment_url:
+                return Response(
+                    {"detail": "Payment initialization failed: No payment URL returned."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             return Response(
-                OrderSerializer(order).data,
+                {
+                    "payment_url": payment_url,
+                    "reference": reference,
+                    "order_id": order.id,
+                    "order": OrderSerializer(order).data,
+                    "status": order.status
+                },
                 status=status.HTTP_201_CREATED
             )
         except Exception as e:
