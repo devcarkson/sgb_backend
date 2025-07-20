@@ -44,6 +44,20 @@ class CartItemCreateView(generics.CreateAPIView):
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
+        
+        # Return the created/updated cart item
+        return cart_item
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        cart_item = self.perform_create(serializer)
+        
+        # Return the cart item with proper serialization
+        return Response(
+            CartItemSerializer(cart_item).data,
+            status=status.HTTP_201_CREATED
+        )
 
 
 class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):

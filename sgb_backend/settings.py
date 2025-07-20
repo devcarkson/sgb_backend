@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+from datetime import timedelta
 
 import os
 from pathlib import Path
@@ -30,7 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # CORS Settings (Dev)
-# CORS_ALLOW_ALL_ORIGINS = True  # Disable in production! Use whitelist below.
+CORS_ALLOW_ALL_ORIGINS = True  # Disable in production! Use whitelist below.
 
 # CORS Whitelist (Production)
 # CORS_ALLOWED_ORIGINS = [
@@ -180,7 +181,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -196,6 +197,15 @@ CSRF_COOKIE_SECURE = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
