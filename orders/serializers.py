@@ -95,6 +95,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class CheckoutSerializer(serializers.Serializer):
+    first_name = serializers.CharField(
+        required=True,
+        max_length=150,
+        help_text="First name of the recipient"
+    )
+    last_name = serializers.CharField(
+        required=True,
+        max_length=150,
+        help_text="Last name of the recipient"
+    )
     shipping_address = serializers.CharField(
         required=True, 
         max_length=500,
@@ -145,6 +155,11 @@ class CheckoutSerializer(serializers.Serializer):
         request = self.context.get('request')
         user = request.user
         cart = user.cart
+
+        # Update user's first and last name if provided
+        user.first_name = validated_data['first_name']
+        user.last_name = validated_data['last_name']
+        user.save()
         
         # Calculate order totals
         subtotal = cart.subtotal

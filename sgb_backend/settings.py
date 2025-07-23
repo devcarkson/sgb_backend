@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'django_rest_passwordreset',
+    "django_extensions",
     
     # Local
     'accounts',

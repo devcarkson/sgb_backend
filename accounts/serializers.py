@@ -2,18 +2,39 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login  # Add this import
+from .models import Address, UserSettings
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'phone', 'address')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address')
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+        }
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = [
+            'id', 'first_name', 'last_name', 'street', 'city', 'state', 'zip_code',
+            'phone', 'type', 'is_default'
+        ]
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSettings
+        fields = [
+            'email_notifications', 'sms_notifications', 'order_updates',
+            'promotional_emails', 'two_factor_auth', 'language', 'currency', 'theme'
+        ]
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

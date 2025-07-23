@@ -1,11 +1,15 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer, LoginSerializer, AddressSerializer, UserSettingsSerializer
+from .models import Address, UserSettings
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate, login  # Added login import
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -59,3 +63,51 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 class MyTokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+# Address CRUD
+class AddressListCreateView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+# UserSettings retrieve/update
+class UserSettingsView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSettingsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Ensure settings exist for user
+        settings, _ = UserSettings.objects.get_or_create(user=self.request.user)
+        return settings
+    
+
+    
+class UserStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        # Example logic, adjust according to your models
+        total_orders = getattr(user, 'orders', []).count() if hasattr(user, 'orders') else 0
+        total_spent = sum(order.total for order in getattr(user, 'orders', []).all()) if hasattr(user, 'orders') else 0
+        wishlist_items = getattr(user, 'wishlist', []).count() if hasattr(user, 'wishlist') else 0
+        member_since = user.date_joined.strftime('%Y-%m-%d') if hasattr(user, 'date_joined') else ''
+
+        return Response({
+            'totalOrders': total_orders,
+            'totalSpent': total_spent,
+            'wishlistItems': wishlist_items,
+            'memberSince': member_since,
+        })

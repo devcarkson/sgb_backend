@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from .models import Order
+from products.models import Notification
 
 def send_order_confirmation_email(order):
     subject = f"Order Confirmation - #{order.order_number}"
@@ -26,6 +27,11 @@ def send_order_confirmation_email(order):
         settings.DEFAULT_FROM_EMAIL,
         [order.user.email],
         html_message=html_message
+    )
+    # Create notification for order placement
+    Notification.objects.create(
+        user=order.user,
+        message=f"Your order #{order.order_number} has been placed successfully."
     )
 
 @receiver(post_save, sender=Order)
@@ -51,4 +57,9 @@ def send_order_status_update_email(order):
         settings.DEFAULT_FROM_EMAIL,
         [order.user.email],
         html_message=html_message
+    )
+    # Create notification for order status update
+    Notification.objects.create(
+        user=order.user,
+        message=f"Your order #{order.order_number} status has been updated to {order.get_status_display()}."
     )
