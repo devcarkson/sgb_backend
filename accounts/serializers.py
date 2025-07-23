@@ -9,16 +9,33 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address')
+        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'phone')  # address removed
         extra_kwargs = {
-            'password': {'write_only': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
+            'password': {'write_only': True, 'required': False},
+            'email': {'required': False, 'allow_blank': True},
+            'username': {'required': False, 'allow_blank': True},
+            'first_name': {'required': False, 'allow_blank': True},
+            'last_name': {'required': False, 'allow_blank': True},
+            'phone': {'required': False, 'allow_blank': True},
         }
 
     def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        if not password:
+            raise serializers.ValidationError({"password": ["This field is required."]})
         user = User.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
         return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
