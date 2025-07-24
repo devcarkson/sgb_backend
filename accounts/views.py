@@ -1,7 +1,9 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, LoginSerializer, AddressSerializer, UserSettingsSerializer
+from .serializers import UserSerializer, LoginSerializer, AddressSerializer, UserSettingsSerializer, ContactMessageSerializer
+from .models import ContactMessage
+from django.core.mail import mail_admins
 from .models import Address, UserSettings
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -63,6 +65,18 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 class MyTokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+class ContactMessageCreateView(generics.CreateAPIView):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        mail_admins(
+            subject=f"New Contact Message: {instance.subject}",
+            message=f"From: {instance.first_name} {instance.last_name} <{instance.email}>\n\n{instance.message}",
+        )
 
 # Address CRUD
 class AddressListCreateView(generics.ListCreateAPIView):

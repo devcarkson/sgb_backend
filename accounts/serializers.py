@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login  # Add this import
-from .models import Address, UserSettings
+from .models import Address, ContactMessage, UserSettings
 
 User = get_user_model()
 
@@ -52,6 +52,11 @@ class UserSettingsSerializer(serializers.ModelSerializer):
             'email_notifications', 'sms_notifications', 'order_updates',
             'promotional_emails', 'two_factor_auth', 'language', 'currency', 'theme'
         ]
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = '__all__'
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

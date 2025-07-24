@@ -1,7 +1,7 @@
 # accounts/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import User, ContactMessage
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'username', 'is_active', 'is_staff', 'date_joined')
@@ -24,3 +24,4 @@ class CustomUserAdmin(UserAdmin):
     )
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(ContactMessage)

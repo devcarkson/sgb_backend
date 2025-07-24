@@ -1,7 +1,6 @@
 from django.urls import path, include
-from .views import RegisterView, LoginView, UserProfileView, AddressListCreateView, AddressDetailView, UserSettingsView
+from .views import RegisterView, LoginView, UserProfileView, AddressListCreateView, AddressDetailView, UserSettingsView, UserStatsView, ContactMessageCreateView
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import UserStatsView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -15,4 +14,5 @@ urlpatterns = [
     # User settings endpoint
     path('settings/', UserSettingsView.as_view(), name='user-settings'),
     path('profile/stats/', UserStatsView.as_view(), name='user-stats'),
+    path('contact/', ContactMessageCreateView.as_view(), name='contact-message'),
 ]
