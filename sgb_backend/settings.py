@@ -103,7 +103,10 @@ ROOT_URLCONF = 'sgb_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "sgb_backend" / "templates",
+            BASE_DIR / "templates",
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

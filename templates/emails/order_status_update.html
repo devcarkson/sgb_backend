@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Status Update</title>
+</head>
+<body>
+    <h2>Order Status Update</h2>
+    <p>Dear {{ order.user.get_full_name|default:order.user.username }},</p>
+    <p>Your order <strong>#{{ order.order_number }}</strong> status has changed to <strong>{{ order.status_display }}</strong>.</p>
+    <p>Thank you for shopping with us!</p>
+</body>
+</html>

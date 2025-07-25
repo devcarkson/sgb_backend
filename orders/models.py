@@ -6,6 +6,7 @@ import uuid
 from accounts.models import User
 from products.models import Product
 from decimal import Decimal
+from model_utils import FieldTracker
 
 class Cart(models.Model):
     """
@@ -87,6 +88,7 @@ class Order(models.Model):
     """
     Represents a completed order with payment and shipping information.
     """
+    tracker = FieldTracker()
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('processing', 'Processing'),
@@ -196,14 +198,24 @@ class Order(models.Model):
         return f"Order #{self.order_number}"
 
     def save(self, *args, **kwargs):
-        """Generate order number on creation"""
+        """Generate order number on creation and track status changes"""
+        is_new = self.pk is None
+        previous_status = self.tracker.previous('status') if not is_new else None
         if not self.order_number:
             self.order_number = self._generate_order_number()
         super().save(*args, **kwargs)
+        # After saving, check if status changed
+        if not is_new and self.tracker.has_changed('status'):
+            self.on_status_change(previous_status, self.status)
 
     def _generate_order_number(self):
         """Generate a unique order number"""
         return f"ORD-{uuid.uuid4().hex[:8].upper()}"
+
+    def on_status_change(self, old_status, new_status):
+        """Hook for actions when status changes. Extend as needed (e.g., send email, log, etc.)"""
+        # Example: print or log status change
+        print(f"Order {self.order_number} status changed from {old_status} to {new_status}")
 
     @property
     def status_display(self):
