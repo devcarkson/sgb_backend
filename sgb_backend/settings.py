@@ -226,6 +226,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
+    # Remove conflicting PAGE_SIZE - let views control their own pagination
 }
 
 SESSION_COOKIE_SECURE = True
