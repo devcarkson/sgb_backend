@@ -23,6 +23,11 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         if not password:
             raise serializers.ValidationError({"password": ["This field is required."]})
+        
+        # Ensure username is set (required by Django's User model)
+        if not validated_data.get('username'):
+            validated_data['username'] = validated_data.get('email', '')
+        
         user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()

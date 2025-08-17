@@ -165,43 +165,77 @@ class CheckoutView(generics.CreateAPIView):
         
         try:
             order = serializer.save()
-            # Payment initialization (Flutterwave only for now)
-            payment_url = None
-            reference = order.order_number
             payment_method = order.payment_method
-            payment_response = None
+            
+            # Handle different payment methods
             if payment_method == 'flutterwave':
+                # Initialize Flutterwave payment
                 from payments.services import FlutterwaveService
                 try:
                     payment_response = FlutterwaveService.initialize_payment(order)
                     payment_url = payment_response.get('data', {}).get('link')
+                    payment_id = payment_response.get('data', {}).get('payment_id')
+                    
+                    if not payment_url:
+                        return Response(
+                            {"detail": "Payment initialization failed: No payment URL returned."},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                    
+                    return Response(
+                        {
+                            "payment_url": payment_url,
+                            "payment_id": payment_id,
+                            "reference": order.order_number,
+                            "order_id": order.id,
+                            "order": OrderSerializer(order).data,
+                            "status": order.status,
+                            "payment_method": payment_method
+                        },
+                        status=status.HTTP_201_CREATED
+                    )
+                    
                 except Exception as e:
                     return Response(
                         {"detail": f"Payment initialization failed: {str(e)}"},
                         status=status.HTTP_400_BAD_REQUEST
                     )
+            
+            elif payment_method == 'whatsapp':
+                # For WhatsApp orders, just return the order details
+                # The frontend will handle the WhatsApp integration
+                return Response(
+                    {
+                        "order_id": order.id,
+                        "order": OrderSerializer(order).data,
+                        "reference": order.order_number,
+                        "status": order.status,
+                        "payment_method": payment_method,
+                        "message": "Order created successfully. Please complete via WhatsApp."
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            
+            elif payment_method in ['bank_transfer', 'cash_on_delivery']:
+                # For other payment methods, return order details with instructions
+                return Response(
+                    {
+                        "order_id": order.id,
+                        "order": OrderSerializer(order).data,
+                        "reference": order.order_number,
+                        "status": order.status,
+                        "payment_method": payment_method,
+                        "message": f"Order created successfully. Payment method: {payment_method}"
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            
             else:
                 return Response(
-                    {"detail": f"Payment method '{payment_method}' is not supported yet."},
+                    {"detail": f"Payment method '{payment_method}' is not supported."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            if not payment_url:
-                return Response(
-                    {"detail": "Payment initialization failed: No payment URL returned."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            return Response(
-                {
-                    "payment_url": payment_url,
-                    "reference": reference,
-                    "order_id": order.id,
-                    "order": OrderSerializer(order).data,
-                    "status": order.status
-                },
-                status=status.HTTP_201_CREATED
-            )
         except Exception as e:
             return Response(
                 {"detail": str(e)},

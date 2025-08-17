@@ -26,26 +26,56 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0pt#h#h(2a80w%lyelg575hpf)d*360vnv4&@6j%u&26)ub#ic'
-
+# SECRET_KEY = 'django-insecure-0pt#h#h(2a80w%lyelg575hpf)d*360vnv4&@6j%u&26)ub#ic'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
 # CORS Settings (Dev)
-CORS_ALLOW_ALL_ORIGINS = True  # Disable in production! Use whitelist below.
-
-# CORS Whitelist (Production)
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "https://your-react-domain.com",
-# ]
+# CORS_ALLOW_ALL_ORIGINS = True  # Disable in production! Use whitelist below.
 
 ADMINS = [
     ('SGB Admin', 'decarkson@gmail.com'),
 ]
+
+# Image optimization settings
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.JustInTime'
+IMAGEKIT_CACHEFILE_NAMER = 'imagekit.cachefiles.namers.source_name_dot_hash'
+IMAGEKIT_SPEC_CACHEFILE_NAMER = 'imagekit.cachefiles.namers.source_name_as_path'
+
+# Thumbnail settings
+THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.pil_engine.Engine'
+THUMBNAIL_KEY_PREFIX = 'thumbnail'
+THUMBNAIL_FORMAT = 'JPEG'
+THUMBNAIL_QUALITY = 85
+THUMBNAIL_PRESERVE_FORMAT = True
+
+# Cache settings for better performance
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
+}
+
+# Cache timeout settings
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = 'sgb'
+
+# Static files caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files optimization
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 
 # Application definition
 
@@ -60,11 +90,15 @@ INSTALLED_APPS = [
      # Third-party
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
     'drf_yasg',
     'django_rest_passwordreset',
     "django_extensions",
+    'imagekit',
+    'sorl.thumbnail',
     
     # Local
     'accounts',
@@ -96,6 +130,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'sgb_backend.urls'
@@ -144,6 +180,8 @@ DATABASES = {
 # }
 
 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -178,31 +216,31 @@ AUTH_USER_MODEL = 'accounts.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# STATIC_URL = 'static/'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 
 # for production
-# MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'gjwnjybm/public_html/media/')
 
 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'home/gjwnjybm/public_html/static/') 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'home/gjwnjybm/public_html/assets/') 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'home/gjwnjybm/public_html/static/') 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'home/gjwnjybm/public_html/assets/') 
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
     
-# ]
+]
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'# for production
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
@@ -248,9 +286,14 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+     
+    "http://localhost:8080",
+    "http://172.20.10.2:8080",
     
     "http://localhost:8081",
-    "http://172.20.10.2:8081"
+    "http://172.20.10.2:8081",
+    "https://makelacosmetic.uk",
+    "https://sgb-h5g8.onrender.com",
 ]
 
 # For absolute URLs in serializers

@@ -5,18 +5,31 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import permissions
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
 from .models import Product, Category, Review, Wishlist, Notification
-from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer, WishlistSerializer, NotificationSerializer
+from .serializers import ProductSerializer, ProductListSerializer, CategorySerializer, ReviewSerializer, WishlistSerializer, NotificationSerializer
 # from .filters import ProductFilter  # Temporarily commented out
 
 class StandardPagination(PageNumberPagination):
-    page_size = 2  # Better for infinite scroll - shows more products per load
+    page_size = 12  # Optimized for grid layouts (3x4 or 4x3)
     page_size_query_param = 'page_size'
-    max_page_size = 10000
+    max_page_size = 100  # Prevent excessive data loading
+    
+    def get_paginated_response(self, data):
+        return Response({
+            'count': self.page.paginator.count,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'page_size': self.page_size,
+            'results': data
+        })
 
 class ProductListView(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductListSerializer  # Use lightweight serializer for list view
     pagination_class = StandardPagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'description']
@@ -24,7 +37,11 @@ class ProductListView(generics.ListAPIView):
     ordering = ['-created_at']  # Default ordering
     
     def get_queryset(self):
-        queryset = Product.objects.all()
+        # Optimize queries with select_related and prefetch_related
+        queryset = Product.objects.select_related('category').prefetch_related(
+            'images',
+            'reviews'
+        )
         
         # Manual filtering
         category = self.request.query_params.get('category')
@@ -54,10 +71,17 @@ class ProductListView(generics.ListAPIView):
         return queryset
 
 class ProductDetailView(generics.RetrieveAPIView):
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'slug'
+    
+    def get_queryset(self):
+        # Optimize queries for detail view
+        return Product.objects.select_related('category').prefetch_related(
+            'images',
+            'reviews__user'
+        )
 
+@method_decorator(cache_page(60 * 15), name='dispatch')  # Cache for 15 minutes
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -65,18 +89,24 @@ class CategoryListView(generics.ListAPIView):
     
 class FeaturedProductsAPIView(APIView):
     def get(self, request):
-        featured_products = Product.objects.filter(is_featured=True)
+        featured_products = Product.objects.filter(is_featured=True).select_related('category').prefetch_related(
+            'images',
+            'reviews'
+        )
         paginator = StandardPagination()
         result_page = paginator.paginate_queryset(featured_products, request)
-        serializer = ProductSerializer(result_page, many=True)
+        serializer = ProductListSerializer(result_page, many=True, context={'request': request})
         return paginator.get_paginated_response(serializer.data)
     
 class NewArrivalAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        new_products = Product.objects.filter(is_new_arrival=True)
+        new_products = Product.objects.filter(is_new_arrival=True).select_related('category').prefetch_related(
+            'images',
+            'reviews'
+        )
         paginator = StandardPagination()
         result_page = paginator.paginate_queryset(new_products, request)
-        serializer = ProductSerializer(result_page, many=True)
+        serializer = ProductListSerializer(result_page, many=True, context={'request': request})
         return paginator.get_paginated_response(serializer.data)
 
 # ... (keep your other views the same - Review, Wishlist, Notification views)

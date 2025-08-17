@@ -1,11 +1,23 @@
 from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
+from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.processors import ResizeToFill, ResizeToFit
+from PIL import Image
+from .utils import compress_image_on_upload
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='categories/', blank=True, null=True)
+    image = models.ImageField(upload_to='categories/', blank=True, null=True)  # Keep original ImageField
+    
+    # Thumbnail for category cards
+    thumbnail = ImageSpecField(
+        source='image',
+        processors=[ResizeToFill(150, 150)],
+        format='JPEG',
+        options={'quality': 80}
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,6 +50,14 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['is_featured']),
+            models.Index(fields=['is_new_arrival']),
+            models.Index(fields=['category']),
+            models.Index(fields=['price']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['slug']),
+        ]
 
     def __str__(self):
         return self.name
@@ -53,9 +73,36 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(upload_to='products/')  # Keep original ImageField for compatibility
+    
+    # Different sized thumbnails for different use cases
+    thumbnail_small = ImageSpecField(
+        source='image',
+        processors=[ResizeToFill(150, 150)],
+        format='JPEG',
+        options={'quality': 80}
+    )
+    thumbnail_medium = ImageSpecField(
+        source='image',
+        processors=[ResizeToFill(300, 300)],
+        format='JPEG',
+        options={'quality': 85}
+    )
+    thumbnail_large = ImageSpecField(
+        source='image',
+        processors=[ResizeToFit(600, 600)],
+        format='JPEG',
+        options={'quality': 90}
+    )
     is_primary = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['product']),
+            models.Index(fields=['is_primary']),
+            models.Index(fields=['product', 'is_primary']),
+        ]
 
     def __str__(self):
         return f"Image for {self.product.name}"

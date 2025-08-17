@@ -49,4 +49,14 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    from django.views.static import serve
+    from django.views.decorators.cache import cache_control
+    
+    # Add cache headers to media files
+    @cache_control(max_age=60*60*24*7)  # Cache for 1 week
+    def cached_serve(request, path, document_root=None, show_indexes=False):
+        return serve(request, path, document_root, show_indexes)
+    
+    urlpatterns += [
+        path('media/<path:path>', cached_serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
