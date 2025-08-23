@@ -7612,3 +7612,4 @@ INFO 2025-08-23 07:06:27,401 basehttp 9856 15732 "POST /api/auth/token/refresh/ 
 INFO 2025-08-23 07:06:27,408 basehttp 9856 3764 "OPTIONS /api/products/wishlist/ HTTP/1.1" 200 0
 INFO 2025-08-23 07:06:27,423 basehttp 9856 15732 "GET /api/products/wishlist/ HTTP/1.1" 200 2
 INFO 2025-08-23 07:07:13,644 basehttp 9856 3996 "GET /admin/accounts/user/ HTTP/1.1" 200 26918
+INFO 2025-08-23 07:11:27,346 basehttp 9856 15732 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
