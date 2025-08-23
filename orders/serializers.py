@@ -3,6 +3,7 @@ from .models import Cart, CartItem, Order, OrderItem
 from products.models import Product
 from products.serializers import ProductSerializer
 from accounts.serializers import UserSerializer
+from accounts.models import Address
 from decimal import Decimal
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -35,17 +36,22 @@ class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
     user = UserSerializer(read_only=True)
     subtotal = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()  # Add total field for frontend compatibility
     total_items = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
         fields = [
-            'id', 'user', 'items', 'subtotal', 
+            'id', 'user', 'items', 'subtotal', 'total',
             'total_items', 'created_at', 'updated_at'
         ]
         read_only_fields = fields
 
     def get_subtotal(self, obj):
+        return obj.subtotal
+    
+    def get_total(self, obj):
+        # Return the same as subtotal for frontend compatibility
         return obj.subtotal
 
     def get_total_items(self, obj):
@@ -105,6 +111,11 @@ class CheckoutSerializer(serializers.Serializer):
         max_length=150,
         help_text="Last name of the recipient"
     )
+    phone = serializers.CharField(
+        required=False,
+        max_length=20,
+        help_text="Phone number for delivery coordination"
+    )
     shipping_address = serializers.CharField(
         required=True, 
         max_length=500,
@@ -126,7 +137,8 @@ class CheckoutSerializer(serializers.Serializer):
         help_text="Country for shipping"
     )
     shipping_zip_code = serializers.CharField(
-        required=True, 
+        required=False, 
+        allow_blank=True,
         max_length=20,
         help_text="Postal/ZIP code"
     )
@@ -151,6 +163,43 @@ class CheckoutSerializer(serializers.Serializer):
         
         return data
 
+    def _calculate_shipping_fee(self, subtotal, state, city):
+        """Calculate shipping fee based on location and order value"""
+        # Only operate in Lagos State
+        if not state or state.lower() not in ['lagos', 'lagos state']:
+            raise serializers.ValidationError({
+                "shipping_state": "We currently only deliver within Lagos State. Please use WhatsApp order for other locations."
+            })
+        
+        # Debug logging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Calculating shipping - Subtotal: {subtotal}, State: {state}, City: {city}")
+        
+        # Free shipping for orders over ₦100,000 (increased threshold)
+        if subtotal >= Decimal('100000'):
+            logger.info(f"Free shipping applied - subtotal {subtotal} >= 100000")
+            return Decimal('0')
+        
+        # Lagos Island areas (₦4,500 shipping)
+        lagos_island_areas = [
+            'apapa', 'lagos island', 'lagos mainland', 'surulere', 'yaba', 'ebute metta',
+            'victoria island', 'ikoyi', 'banana island', 'lekki phase 1', 'lekki phase 2',
+            'ajah', 'eti-osa', 'ibeju-lekki', 'epe', 'badagry', 'vi', 'lekki'
+        ]
+        
+        # Check if it's Lagos Island area (₦4,500)
+        if city:
+            city_lower = city.lower()
+            for island_area in lagos_island_areas:
+                if island_area in city_lower or city_lower in island_area:
+                    logger.info(f"Lagos Island shipping applied for city: {city}")
+                    return Decimal('4500')  # ₦4,500 for Lagos Island
+        
+        # Default to Lagos Mainland (₦3,500)
+        logger.info(f"Lagos Mainland shipping applied for city: {city}")
+        return Decimal('3500')  # ₦3,500 for Lagos Mainland
+
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user
@@ -163,9 +212,19 @@ class CheckoutSerializer(serializers.Serializer):
         
         # Calculate order totals
         subtotal = cart.subtotal
-        shipping_fee = Decimal('0') if subtotal > Decimal('50000') else Decimal('999')  # Free shipping over ₦50,000
-        tax = subtotal * Decimal('0.08')  # 8% tax
+        
+        # Shipping fee calculation based on location and subtotal
+        shipping_fee = self._calculate_shipping_fee(subtotal, validated_data.get('shipping_state', ''), validated_data.get('shipping_city', ''))
+        
+        # No tax for now (can be enabled later if needed)
+        tax = Decimal('0')
         total = subtotal + shipping_fee + tax
+        
+        # Debug logging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Order calculation - Subtotal: {subtotal}, Shipping: {shipping_fee}, Tax: {tax}, Total: {total}")
+        logger.info(f"Shipping details - State: {validated_data.get('shipping_state')}, City: {validated_data.get('shipping_city')}")
         
         # Create order
         order = Order.objects.create(
@@ -174,7 +233,7 @@ class CheckoutSerializer(serializers.Serializer):
             shipping_city=validated_data['shipping_city'],
             shipping_state=validated_data['shipping_state'],
             shipping_country=validated_data['shipping_country'],
-            shipping_zip_code=validated_data['shipping_zip_code'],
+            shipping_zip_code=validated_data.get('shipping_zip_code', ''),
             payment_method=validated_data['payment_method'],
             subtotal=subtotal,
             shipping_fee=shipping_fee,
@@ -200,14 +259,37 @@ class CheckoutSerializer(serializers.Serializer):
         # Clear the cart
         # cart.items.all().delete()  # <-- Do not clear cart here! Only clear after payment is successful
         
-        # Optionally save shipping info to user profile
+        # Automatically save shipping info as address if save_shipping_info is True
         if validated_data.get('save_shipping_info'):
-            user.profile.shipping_address = validated_data['shipping_address']
-            user.profile.shipping_city = validated_data['shipping_city']
-            user.profile.shipping_state = validated_data['shipping_state']
-            user.profile.shipping_country = validated_data['shipping_country']
-            user.profile.shipping_zip_code = validated_data['shipping_zip_code']
-            user.profile.save()
+            # Check if this exact address already exists
+            existing_address = Address.objects.filter(
+                user=user,
+                first_name=validated_data['first_name'],
+                last_name=validated_data['last_name'],
+                street=validated_data['shipping_address'],
+                city=validated_data['shipping_city'],
+                state=validated_data['shipping_state'],
+                country=validated_data['shipping_country']
+            ).first()
+            
+            if not existing_address:
+                # Determine if this should be the default address
+                is_default = not Address.objects.filter(user=user).exists()
+                
+                # Create new address
+                Address.objects.create(
+                    user=user,
+                    type='home',  # Default to home address
+                    first_name=validated_data['first_name'],
+                    last_name=validated_data['last_name'],
+                    phone=validated_data.get('phone', ''),
+                    street=validated_data['shipping_address'],
+                    city=validated_data['shipping_city'],
+                    state=validated_data['shipping_state'],
+                    country=validated_data['shipping_country'],
+                    zip_code=validated_data.get('shipping_zip_code', ''),
+                    is_default=is_default
+                )
         
         return order
 

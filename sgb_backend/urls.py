@@ -8,6 +8,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from debug_views import debug_order_total, debug_cart_total
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -42,6 +43,10 @@ urlpatterns = [
     path('api/products/', include('products.urls')),
     path('api/orders/', include('orders.urls')),
     path('api/payments/', include('payments.urls')),
+    
+    # Debug endpoints (only in DEBUG mode)
+    path('debug/order/<str:order_number>/', debug_order_total, name='debug-order-total'),
+    path('debug/cart/', debug_cart_total, name='debug-cart-total'),
 
     # API documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

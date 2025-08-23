@@ -1,0 +1,33 @@
+/* Product image previews */
+.field-image_preview img {
+    max-height: 100px;
+    max-width: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Improved form layout */
+.inline-related .form-row {
+    padding: 5px 0;
+}
+
+/* Better action buttons */
+.object-tools a {
+    background-color: #417690;
+    color: white !important;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.object-tools a:hover {
+    background-color: #205067;
+}
+
+/* Status indicators */
+.column-is_active .icon-true {
+    color: green;
+}
+
+.column-is_active .icon-false {
+    color: red;
+}

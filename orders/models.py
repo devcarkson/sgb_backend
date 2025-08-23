@@ -130,7 +130,7 @@ class Order(models.Model):
     shipping_city = models.CharField(max_length=100, verbose_name="City")
     shipping_state = models.CharField(max_length=100, verbose_name="State")
     shipping_country = models.CharField(max_length=100, verbose_name="Country")
-    shipping_zip_code = models.CharField(max_length=20, verbose_name="ZIP Code")
+    shipping_zip_code = models.CharField(max_length=20, blank=True, verbose_name="ZIP Code")
     
     # Payment information
     payment_method = models.CharField(
@@ -217,6 +217,22 @@ class Order(models.Model):
         """Hook for actions when status changes. Extend as needed (e.g., send email, log, etc.)"""
         # Example: print or log status change
         print(f"Order {self.order_number} status changed from {old_status} to {new_status}")
+        # Real-time update broadcast for order status change
+        try:
+            from payments.realtime import broadcast_realtime_update
+            from .serializers import OrderSerializer
+            broadcast_realtime_update(
+                user_id=str(self.user.id),
+                data={
+                    "type": "order_update",
+                    "order": OrderSerializer(self).data
+                }
+            )
+        except Exception as e:
+            # Avoid breaking for import errors during migrations
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Realtime order_update error: {e}")
 
     @property
     def status_display(self):

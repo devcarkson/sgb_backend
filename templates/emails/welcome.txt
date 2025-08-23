@@ -1,0 +1,28 @@
+Welcome to {{ site_name }}!
+
+Hello {{ user.first_name|default:user.username }}!
+
+Thank you for joining our community! We're excited to have you on board and can't wait for you to explore everything we have to offer.
+
+Start shopping now: {{ frontend_url }}
+
+What you can expect:
+• Quality Products - Discover our curated collection of premium products
+• Fast Delivery - Quick and reliable shipping to your doorstep
+• Secure Payments - Safe and secure payment options for your peace of mind
+• Personalized Experience - Tailored recommendations just for you
+
+Getting Started:
+- Complete your profile for a personalized experience
+- Browse our featured products and categories
+- Add items to your wishlist for later
+- Set up your delivery addresses
+
+If you have any questions or need assistance, our customer support team is here to help. Don't hesitate to reach out!
+
+Happy shopping!
+The {{ site_name }} Team
+
+---
+You're receiving this email because you created an account with {{ site_name }}.
+© {% now "Y" %} {{ site_name }}. All rights reserved.

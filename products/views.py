@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import permissions
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 from .models import Product, Category, Review, Wishlist, Notification
@@ -123,6 +123,7 @@ class ProductReviewListCreateView(generics.ListCreateAPIView):
         product = Product.objects.get(slug=self.kwargs['slug'])
         serializer.save(user=self.request.user, product=product)
 
+@method_decorator(never_cache, name='dispatch')
 class WishlistListCreateView(generics.ListCreateAPIView):
     serializer_class = WishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -131,8 +132,24 @@ class WishlistListCreateView(generics.ListCreateAPIView):
         return Wishlist.objects.filter(user=self.request.user).select_related('product')
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        wishlist = serializer.save(user=self.request.user)
+        # Broadcast wishlist update
+        try:
+            from payments.realtime import broadcast_realtime_update
+            from .serializers import WishlistSerializer
+            broadcast_realtime_update(
+                user_id=str(self.request.user.id),
+                data={
+                    "type": "wishlist_update",
+                    "wishlist": WishlistSerializer(Wishlist.objects.filter(user=self.request.user), many=True).data
+                }
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Realtime wishlist_update error: {e}")
 
+@method_decorator(never_cache, name='dispatch')
 class WishlistDeleteView(generics.DestroyAPIView):
     serializer_class = WishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -141,6 +158,26 @@ class WishlistDeleteView(generics.DestroyAPIView):
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
 
+    def perform_destroy(self, instance):
+        user_id = instance.user.id
+        instance.delete()
+        # Broadcast wishlist update after removal
+        try:
+            from payments.realtime import broadcast_realtime_update
+            from .serializers import WishlistSerializer
+            broadcast_realtime_update(
+                user_id=str(user_id),
+                data={
+                    "type": "wishlist_update",
+                    "wishlist": WishlistSerializer(Wishlist.objects.filter(user__id=user_id), many=True).data
+                }
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Realtime wishlist_update remove error: {e}")
+
+@method_decorator(never_cache, name='dispatch')
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -148,6 +185,7 @@ class NotificationListView(generics.ListAPIView):
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user)
 
+@method_decorator(never_cache, name='dispatch')
 class NotificationMarkReadView(generics.UpdateAPIView):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]

@@ -11,6 +11,8 @@ from .serializers import (
     CheckoutSerializer
 )
 from products.models import Product
+from payments.realtime import broadcast_realtime_update
+from .serializers import CartSerializer
 
 class CartDetailView(generics.RetrieveAPIView):
     """
@@ -46,6 +48,14 @@ class CartItemCreateView(generics.CreateAPIView):
             cart_item.save()
         
         # Return the created/updated cart item
+        # Broadcast cart update
+        broadcast_realtime_update(
+            user_id=str(self.request.user.id),
+            data={
+                "type": "cart_update",
+                "cart": CartSerializer(cart).data
+            }
+        )
         return cart_item
 
     def create(self, request, *args, **kwargs):
@@ -74,6 +84,15 @@ class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
         if instance.cart.user != self.request.user:
             raise permissions.PermissionDenied
         instance.delete()
+        # Broadcast cart update after removal
+        cart = Cart.get_or_create_cart(self.request.user)
+        broadcast_realtime_update(
+            user_id=str(self.request.user.id),
+            data={
+                "type": "cart_update",
+                "cart": CartSerializer(cart).data
+            }
+        )
 
 
 class CartItemBulkUpdateView(APIView):
@@ -118,10 +137,19 @@ class CartItemBulkUpdateView(APIView):
                         status=status.HTTP_404_NOT_FOUND
                     )
         
-        return Response(
+        resp = Response(
             CartItemSerializer(updated_items, many=True).data,
             status=status.HTTP_200_OK
         )
+        # Broadcast cart update after bulk changes
+        broadcast_realtime_update(
+            user_id=str(request.user.id),
+            data={
+                "type": "cart_update",
+                "cart": CartSerializer(cart).data
+            }
+        )
+        return resp
 
 
 class OrderListView(generics.ListAPIView):
@@ -165,6 +193,20 @@ class CheckoutView(generics.CreateAPIView):
         
         try:
             order = serializer.save()
+            try:
+                from payments.realtime import broadcast_realtime_update
+                from .serializers import OrderSerializer
+                broadcast_realtime_update(
+                    user_id=str(order.user.id),
+                    data={
+                        "type": "order_update",
+                        "order": OrderSerializer(order).data
+                    }
+                )
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Realtime order_update error (creation): {e}")
             payment_method = order.payment_method
             
             # Handle different payment methods
@@ -252,10 +294,19 @@ class ClearCartView(APIView):
     def post(self, request, *args, **kwargs):
         cart = Cart.get_or_create_cart(request.user)
         deleted_count, _ = cart.items.all().delete()
-        return Response(
+        resp = Response(
             {"detail": f"Removed {deleted_count} items from your cart"},
             status=status.HTTP_200_OK
         )
+        # Broadcast cart update after clear
+        broadcast_realtime_update(
+            user_id=str(request.user.id),
+            data={
+                "type": "cart_update",
+                "cart": CartSerializer(cart).data
+            }
+        )
+        return resp
 
 
 class OrderStatusUpdateView(generics.UpdateAPIView):

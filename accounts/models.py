@@ -20,7 +20,8 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default='Nigeria')
+    zip_code = models.CharField(max_length=20, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     type = models.CharField(max_length=20, default='home')  # home, work, other
     is_default = models.BooleanField(default=False)

@@ -1,9 +1,11 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, LoginSerializer, AddressSerializer, UserSettingsSerializer, ContactMessageSerializer
 from .models import ContactMessage
-from django.core.mail import mail_admins
+from .email_service import EmailService
 from .models import Address, UserSettings
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,11 +13,23 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate, login  # Added login import
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+import logging
 
+logger = logging.getLogger(__name__)
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -56,6 +70,7 @@ class LoginView(APIView):
             'message': 'Login successful'
         }, status=status.HTTP_200_OK)
 
+@method_decorator(never_cache, name='dispatch')
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -73,12 +88,15 @@ class ContactMessageCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        mail_admins(
-            subject=f"New Contact Message: {instance.subject}",
-            message=f"From: {instance.first_name} {instance.last_name} <{instance.email}>\n\n{instance.message}",
-        )
+        try:
+            # Send notification email to admins using EmailService
+            EmailService.send_contact_form_notification(instance)
+            logger.info(f"Contact form notification sent for message from {instance.email}")
+        except Exception as e:
+            logger.error(f"Failed to send contact form notification: {str(e)}")
 
 # Address CRUD
+@method_decorator(never_cache, name='dispatch')
 class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -89,6 +107,7 @@ class AddressListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+@method_decorator(never_cache, name='dispatch')
 class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -97,6 +116,7 @@ class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Address.objects.filter(user=self.request.user)
 
 # UserSettings retrieve/update
+@method_decorator(never_cache, name='dispatch')
 class UserSettingsView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSettingsSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -108,6 +128,7 @@ class UserSettingsView(generics.RetrieveUpdateAPIView):
     
 
     
+@method_decorator(never_cache, name='dispatch')
 class UserStatsView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -201,6 +201,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -224,11 +226,11 @@ AUTH_USER_MODEL = 'accounts.User'
 # ]
 
 
+
 # for production
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'gjwnjybm/public_html/media/')
-
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'home/gjwnjybm/public_html/static/') 
@@ -245,12 +247,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 
 
@@ -264,7 +265,16 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
-    # Remove conflicting PAGE_SIZE - let views control their own pagination
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10000/hour',
+        'user': '100000/hour',
+        'payment': '1000/min',
+        'webhook': '10000/min',
+    }
 }
 
 SESSION_COOKIE_SECURE = True
@@ -275,12 +285,16 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 
+
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -301,9 +315,10 @@ CORS_ALLOWED_ORIGINS = [
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
+
+
 # Flutterwave Config
 FLW_PUBLIC_KEY = os.getenv('FLW_PUBLIC_KEY')
-
 FLW_SECRET_KEY = os.getenv('FLW_SECRET_KEY')
 FLW_WEBHOOK_HASH = os.getenv('FLW_WEBHOOK_HASH')
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:8080")
@@ -312,10 +327,80 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:8080")
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+# Email timeout settings
+EMAIL_TIMEOUT = 5  # Timeout in seconds for email operations
+EMAIL_CONN_MAX_RETRIES = 2  # Maximum number of connection retries
+EMAIL_CONN_RETRY_DELAY = 1  # Delay between retries in seconds
+
+# Additional Email Settings
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')  # For development
+EMAIL_SUBJECT_PREFIX = '[SGB Store] '  # Prefix for email subjects
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'formatter': 'verbose',
+        },
+        'payment_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'payments.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'payments': {
+            'handlers': ['payment_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'payments.services': {
+            'handlers': ['payment_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'payments.views': {
+            'handlers': ['payment_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Create logs directory if it doesn't exist
+os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
 
 ADMINS = [
     ('SGB Admin', 'decarkson@gmail.com'),

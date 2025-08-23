@@ -2,6 +2,10 @@ from django.db import models
 from django.utils import timezone
 from orders.models import Order
 import uuid
+import logging
+from .realtime import broadcast_realtime_update
+
+logger = logging.getLogger(__name__)
 
 class Payment(models.Model):
     """
@@ -91,6 +95,17 @@ class Payment(models.Model):
         verbose_name="Gateway Response Data"
     )
     
+    # Additional fields for better tracking
+    retry_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Retry Count"
+    )
+    last_error = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Last Error Message"
+    )
+    
     class Meta:
         verbose_name = "Payment"
         verbose_name_plural = "Payments"
@@ -129,15 +144,64 @@ class Payment(models.Model):
                 self.order.status = 'processing'
             
             self.order.save()
+            
+            # Clear the cart after successful payment
+            self._clear_user_cart()
+            
+            logger.info(f"Payment {self.payment_id} marked as successful for order {self.order.order_number}")
+
+        # Realtime push for payment success
+        from .serializers import PaymentSerializer
+        payment_data = PaymentSerializer(self).data
+        broadcast_realtime_update(
+            user_id=str(self.order.user.id),
+            data={
+                "type": "payment_update",
+                "payment": payment_data,
+                "order_number": self.order.order_number,
+                "status": "successful"
+            }
+        )
     
-    def mark_as_failed(self, gateway_response=None):
+    def mark_as_failed(self, gateway_response=None, error_message=None):
         """Mark payment as failed"""
         self.status = 'failed'
         
         if gateway_response:
             self.gateway_response = gateway_response
+            
+        if error_message:
+            self.last_error = error_message
         
         self.save()
+        logger.warning(f"Payment {self.payment_id} marked as failed for order {self.order.order_number}")
+
+        # Realtime push for payment failure
+        from .serializers import PaymentSerializer
+        payment_data = PaymentSerializer(self).data
+        broadcast_realtime_update(
+            user_id=str(self.order.user.id),
+            data={
+                "type": "payment_update",
+                "payment": payment_data,
+                "order_number": self.order.order_number,
+                "status": "failed"
+            }
+        )
+    
+    def increment_retry_count(self):
+        """Increment retry count for failed payments"""
+        self.retry_count += 1
+        self.save()
+    
+    def _clear_user_cart(self):
+        """Clear user's cart after successful payment"""
+        try:
+            cart = self.order.user.cart
+            deleted_count, _ = cart.items.all().delete()
+            logger.info(f"Cleared {deleted_count} items from cart for user {self.order.user.email}")
+        except Exception as e:
+            logger.error(f"Error clearing cart for user {self.order.user.email}: {str(e)}")
     
     @property
     def is_successful(self):
@@ -146,3 +210,16 @@ class Payment(models.Model):
     @property
     def is_pending(self):
         return self.status == 'pending'
+    
+    @property
+    def is_failed(self):
+        return self.status == 'failed'
+    
+    @property
+    def can_retry(self):
+        """Check if payment can be retried (max 3 retries)"""
+        return self.is_failed and self.retry_count < 3
+    
+    def get_display_status(self):
+        """Get human-readable status"""
+        return dict(self.PAYMENT_STATUS_CHOICES).get(self.status, self.status)

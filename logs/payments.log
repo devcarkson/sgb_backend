@@ -1,0 +1,80 @@
+INFO 2025-08-17 09:17:10,773 services 14472 8040 Initializing Flutterwave payment for order ORD-A3819CA6
+INFO 2025-08-17 09:17:13,519 services 14472 8040 Flutterwave payment response for order ORD-A3819CA6: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-17 09:20:02,796 services 14472 8040 Verifying Flutterwave transaction: 9567699
+INFO 2025-08-17 09:20:03,364 services 14472 8040 Flutterwave verification response for 9567699: status=success
+ERROR 2025-08-17 09:20:09,726 views 14472 8040 Callback verification error: no such table: products_notification
+INFO 2025-08-19 16:18:37,975 services 10948 10420 Initializing Flutterwave payment for order ORD-BABCCCAC
+INFO 2025-08-19 16:18:39,568 services 10948 10420 Flutterwave payment response for order ORD-BABCCCAC: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-19 16:20:49,285 services 10948 4492 Verifying Flutterwave transaction: 9574055
+INFO 2025-08-19 16:20:50,058 services 10948 4492 Flutterwave verification response for 9574055: status=success
+INFO 2025-08-19 16:20:56,002 models 10948 4492 Cleared 1 items from cart for user decarkson@gmail.com
+INFO 2025-08-19 16:20:56,002 models 10948 4492 Payment 402440ba-81de-4828-a2f5-ca2667993a5b marked as successful for order ORD-BABCCCAC
+INFO 2025-08-19 17:10:57,824 services 10864 16032 Initializing Flutterwave payment for order ORD-BF557A13
+INFO 2025-08-19 17:10:58,843 services 10864 16032 Flutterwave payment response for order ORD-BF557A13: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-20 07:26:06,077 services 13344 14696 Initializing Flutterwave payment for order ORD-092E7D5F
+INFO 2025-08-20 07:26:07,081 services 13344 14696 Flutterwave payment response for order ORD-092E7D5F: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-20 07:33:09,452 services 18016 17340 Initializing Flutterwave payment for order ORD-6DAAF206
+INFO 2025-08-20 07:33:11,631 services 18016 17340 Flutterwave payment response for order ORD-6DAAF206: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-20 07:34:24,078 services 18016 13768 Initializing Flutterwave payment for order ORD-C604D346
+INFO 2025-08-20 07:34:25,255 services 18016 13768 Flutterwave payment response for order ORD-C604D346: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-20 07:35:32,055 services 18016 13776 Initializing Flutterwave payment for order ORD-A2413A52
+INFO 2025-08-20 07:35:32,635 services 18016 13776 Flutterwave payment response for order ORD-A2413A52: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 10:06:05,789 services 18016 2356 Initializing Flutterwave payment for order ORD-0C0DC6E8
+INFO 2025-08-21 10:06:07,055 services 18016 2356 Flutterwave payment response for order ORD-0C0DC6E8: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 10:08:44,277 services 18016 2356 Initializing Flutterwave payment for order ORD-CEC98864
+INFO 2025-08-21 10:08:45,463 services 18016 2356 Flutterwave payment response for order ORD-CEC98864: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 13:58:56,617 services 13604 20100 Initializing Flutterwave payment for order ORD-31A6A072
+INFO 2025-08-21 13:58:57,428 services 13604 20100 Flutterwave payment response for order ORD-31A6A072: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 14:06:00,426 services 13604 20100 Initializing Flutterwave payment for order ORD-2AF115B0
+INFO 2025-08-21 14:06:06,963 services 13604 20100 Flutterwave payment response for order ORD-2AF115B0: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 14:12:48,941 services 8536 18164 Initializing Flutterwave payment for order ORD-76A04389
+INFO 2025-08-21 14:12:48,941 services 8536 18164 Payment details - Amount: 61499.00, Subtotal: 61499.00, Shipping: 0, Tax: 0
+INFO 2025-08-21 14:12:49,680 services 8536 18164 Flutterwave payment response for order ORD-76A04389: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 14:58:16,730 services 15736 9304 Initializing Flutterwave payment for order ORD-8193772C
+INFO 2025-08-21 14:58:16,730 services 15736 9304 Payment details - Amount: 61499.00, Subtotal: 61499.00, Shipping: 0, Tax: 0
+INFO 2025-08-21 14:58:16,731 services 15736 9304 Flutterwave payload amount: 61499.00
+INFO 2025-08-21 14:58:16,731 services 15736 9304 Full Flutterwave payload: {'tx_ref': '115d4084-38bb-45ca-a3e9-68175b6631ab', 'amount': '61499.00', 'currency': 'NGN', 'redirect_url': 'http://localhost:8080/payment/callback', 'customer': {'email': 'decarkson@gmail.com', 'name': 'Agbor David Carkson', 'phone_number': '08138824521'}, 'customizations': {'title': 'SGB Store Payment', 'description': 'Payment for Order #ORD-8193772C', 'logo': 'http://localhost:8080/logo.png'}, 'meta': {'order_id': 17, 'order_number': 'ORD-8193772C', 'payment_id': '115d4084-38bb-45ca-a3e9-68175b6631ab'}}
+INFO 2025-08-21 14:58:17,840 services 15736 9304 Flutterwave payment response for order ORD-8193772C: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 15:03:38,641 services 6340 14924 Initializing Flutterwave payment for order ORD-7E83705A
+INFO 2025-08-21 15:03:38,642 services 6340 14924 Payment details - Amount: 65999.00, Subtotal: 61499.00, Shipping: 4500, Tax: 0
+INFO 2025-08-21 15:03:38,642 services 6340 14924 Flutterwave payload amount: 65999.00
+INFO 2025-08-21 15:03:38,642 services 6340 14924 Full Flutterwave payload: {'tx_ref': '5636d00f-0b67-4933-b186-41e4559029d9', 'amount': '65999.00', 'currency': 'NGN', 'redirect_url': 'http://localhost:8080/payment/callback', 'customer': {'email': 'decarkson@gmail.com', 'name': 'Agbor David Carkson', 'phone_number': '08138824521'}, 'customizations': {'title': 'SGB Store Payment', 'description': 'Payment for Order #ORD-7E83705A', 'logo': 'http://localhost:8080/logo.png'}, 'meta': {'order_id': 18, 'order_number': 'ORD-7E83705A', 'payment_id': '5636d00f-0b67-4933-b186-41e4559029d9'}}
+INFO 2025-08-21 15:03:39,276 services 6340 14924 Flutterwave payment response for order ORD-7E83705A: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 15:09:20,211 services 13716 17000 === FLUTTERWAVE PAYMENT DEBUG ===
+INFO 2025-08-21 15:09:20,212 services 13716 17000 Order Number: ORD-148426D0
+INFO 2025-08-21 15:09:20,212 services 13716 17000 Order ID: 19
+INFO 2025-08-21 15:09:20,212 services 13716 17000 Order Details:
+INFO 2025-08-21 15:09:20,212 services 13716 17000   - Subtotal: 61499.00
+INFO 2025-08-21 15:09:20,212 services 13716 17000   - Shipping Fee: 4500
+INFO 2025-08-21 15:09:20,213 services 13716 17000   - Tax: 0
+INFO 2025-08-21 15:09:20,213 services 13716 17000   - Total: 65999.00
+INFO 2025-08-21 15:09:20,213 services 13716 17000   - Shipping City: Yaba
+INFO 2025-08-21 15:09:20,214 services 13716 17000   - Shipping State: Lagos
+INFO 2025-08-21 15:09:20,214 services 13716 17000 Payment Record:
+INFO 2025-08-21 15:09:20,214 services 13716 17000   - Payment ID: 22f72d05-b062-4759-a614-4c2b2e7d64dc
+INFO 2025-08-21 15:09:20,214 services 13716 17000   - Payment Amount: 65999.00
+INFO 2025-08-21 15:09:20,215 services 13716 17000 Flutterwave Payload:
+INFO 2025-08-21 15:09:20,215 services 13716 17000   - Amount String: 65999.00
+INFO 2025-08-21 15:09:20,215 services 13716 17000   - TX Ref: 22f72d05-b062-4759-a614-4c2b2e7d64dc
+INFO 2025-08-21 15:09:20,216 services 13716 17000   - Currency: NGN
+INFO 2025-08-21 15:09:20,216 services 13716 17000 === END DEBUG ===
+INFO 2025-08-21 15:09:20,876 services 13716 17000 Flutterwave payment response for order ORD-148426D0: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-08-21 15:48:31,364 services 8140 13660 === FLUTTERWAVE PAYMENT DEBUG ===
+INFO 2025-08-21 15:48:31,365 services 8140 13660 Order Number: ORD-2D3B234E
+INFO 2025-08-21 15:48:31,365 services 8140 13660 Order ID: 20
+INFO 2025-08-21 15:48:31,365 services 8140 13660 Order Details:
+INFO 2025-08-21 15:48:31,365 services 8140 13660   - Subtotal: 9500.00
+INFO 2025-08-21 15:48:31,365 services 8140 13660   - Shipping Fee: 4500
+INFO 2025-08-21 15:48:31,366 services 8140 13660   - Tax: 0
+INFO 2025-08-21 15:48:31,366 services 8140 13660   - Total: 14000.00
+INFO 2025-08-21 15:48:31,366 services 8140 13660   - Shipping City: Yaba
+INFO 2025-08-21 15:48:31,366 services 8140 13660   - Shipping State: Lagos
+INFO 2025-08-21 15:48:31,366 services 8140 13660 Payment Record:
+INFO 2025-08-21 15:48:31,366 services 8140 13660   - Payment ID: 2c4494da-fc9f-4682-b553-ee26571953e3
+INFO 2025-08-21 15:48:31,367 services 8140 13660   - Payment Amount: 14000.00
+INFO 2025-08-21 15:48:31,367 services 8140 13660 Flutterwave Payload:
+INFO 2025-08-21 15:48:31,367 services 8140 13660   - Amount String: 14000.00
+INFO 2025-08-21 15:48:31,367 services 8140 13660   - TX Ref: 2c4494da-fc9f-4682-b553-ee26571953e3
+INFO 2025-08-21 15:48:31,367 services 8140 13660   - Currency: NGN
+INFO 2025-08-21 15:48:31,367 services 8140 13660 === END DEBUG ===
+INFO 2025-08-21 15:48:31,973 services 8140 13660 Flutterwave payment response for order ORD-2D3B234E: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
