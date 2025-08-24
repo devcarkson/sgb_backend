@@ -200,7 +200,7 @@
                 </div>
                 <div class="info-item">
                     <strong>Total Amount</strong>
-                    ${{ order.total }}
+                    ₦{{ order.total }}
                 </div>
             </div>
             
@@ -224,7 +224,7 @@
                     </div>
                     <div class="item-details">
                         <h4 class="item-name">{{ item.product_name }}</h4>
-                        <p class="item-price">${{ item.price }} each</p>
+                        <p class="item-price">₦{{ item.price }} each</p>
                     </div>
                     <div class="item-quantity">
                         Qty: {{ item.quantity }}
@@ -236,19 +236,19 @@
             <div class="total-section">
                 <div class="total-row">
                     <span>Subtotal:</span>
-                    <span>${{ order.subtotal }}</span>
+                    <span>₦{{ order.subtotal }}</span>
                 </div>
                 <div class="total-row">
                     <span>Shipping:</span>
-                    <span>${{ order.shipping_fee }}</span>
+                    <span>₦{{ order.shipping_fee }}</span>
                 </div>
                 <div class="total-row">
                     <span>Tax:</span>
-                    <span>${{ order.tax }}</span>
+                    <span>₦{{ order.tax }}</span>
                 </div>
                 <div class="total-row final">
                     <span>Total:</span>
-                    <span>${{ order.total }}</span>
+                    <span>₦{{ order.total }}</span>
                 </div>
             </div>
             

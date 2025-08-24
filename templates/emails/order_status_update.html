@@ -94,7 +94,7 @@
                 <strong>Order Details:</strong><br>
                 Order Number: #{{ order.order_number }}<br>
                 Order Date: {{ order.created_at|date:"F d, Y" }}<br>
-                Total Amount: ${{ order.total }}
+                Total Amount: ₦{{ order.total }}
             </div>
             
             {% if order.status == 'shipped' %}
