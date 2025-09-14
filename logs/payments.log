@@ -78,3 +78,46 @@ INFO 2025-08-21 15:48:31,367 services 8140 13660   - TX Ref: 2c4494da-fc9f-4682-
 INFO 2025-08-21 15:48:31,367 services 8140 13660   - Currency: NGN
 INFO 2025-08-21 15:48:31,367 services 8140 13660 === END DEBUG ===
 INFO 2025-08-21 15:48:31,973 services 8140 13660 Flutterwave payment response for order ORD-2D3B234E: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-09-12 07:13:14,952 services 16176 10456 === FLUTTERWAVE PAYMENT DEBUG ===
+INFO 2025-09-12 07:13:14,953 services 16176 10456 Order Number: ORD-863BFDBA
+INFO 2025-09-12 07:13:14,953 services 16176 10456 Order ID: 21
+INFO 2025-09-12 07:13:14,953 services 16176 10456 Order Details:
+INFO 2025-09-12 07:13:14,953 services 16176 10456   - Subtotal: 5500.00
+INFO 2025-09-12 07:13:14,953 services 16176 10456   - Shipping Fee: 3500
+INFO 2025-09-12 07:13:14,954 services 16176 10456   - Tax: 0
+INFO 2025-09-12 07:13:14,954 services 16176 10456   - Total: 9000.00
+INFO 2025-09-12 07:13:14,954 services 16176 10456   - Shipping City: Agege
+INFO 2025-09-12 07:13:14,954 services 16176 10456   - Shipping State: Lagos
+INFO 2025-09-12 07:13:14,954 services 16176 10456 Payment Record:
+INFO 2025-09-12 07:13:14,955 services 16176 10456   - Payment ID: ccf0d8cb-72a9-409e-8516-b643e7233cc3
+INFO 2025-09-12 07:13:14,955 services 16176 10456   - Payment Amount: 9000.00
+INFO 2025-09-12 07:13:14,955 services 16176 10456 Flutterwave Payload:
+INFO 2025-09-12 07:13:14,955 services 16176 10456   - Amount String: 9000.00
+INFO 2025-09-12 07:13:14,955 services 16176 10456   - TX Ref: ccf0d8cb-72a9-409e-8516-b643e7233cc3
+INFO 2025-09-12 07:13:14,955 services 16176 10456   - Currency: NGN
+INFO 2025-09-12 07:13:14,956 services 16176 10456 === END DEBUG ===
+INFO 2025-09-12 07:13:15,808 services 16176 10456 Flutterwave payment response for order ORD-863BFDBA: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-09-13 13:10:31,327 services 20652 4012 === FLUTTERWAVE PAYMENT DEBUG ===
+INFO 2025-09-13 13:10:31,328 services 20652 4012 Order Number: ORD-CF4C7F86
+INFO 2025-09-13 13:10:31,328 services 20652 4012 Order ID: 3
+INFO 2025-09-13 13:10:31,328 services 20652 4012 Order Details:
+INFO 2025-09-13 13:10:31,328 services 20652 4012   - Subtotal: 8500.00
+INFO 2025-09-13 13:10:31,329 services 20652 4012   - Shipping Fee: 3500
+INFO 2025-09-13 13:10:31,329 services 20652 4012   - Tax: 0
+INFO 2025-09-13 13:10:31,329 services 20652 4012   - Total: 12000.00
+INFO 2025-09-13 13:10:31,330 services 20652 4012   - Shipping City: Ikorodu
+INFO 2025-09-13 13:10:31,330 services 20652 4012   - Shipping State: Lagos
+INFO 2025-09-13 13:10:31,330 services 20652 4012 Payment Record:
+INFO 2025-09-13 13:10:31,330 services 20652 4012   - Payment ID: d40529c1-b1bc-4e3e-aee6-56cc25df7f75
+INFO 2025-09-13 13:10:31,331 services 20652 4012   - Payment Amount: 12000.00
+INFO 2025-09-13 13:10:31,331 services 20652 4012 Flutterwave Payload:
+INFO 2025-09-13 13:10:31,331 services 20652 4012   - Amount String: 12000.00
+INFO 2025-09-13 13:10:31,411 services 20652 4012   - TX Ref: d40529c1-b1bc-4e3e-aee6-56cc25df7f75
+INFO 2025-09-13 13:10:31,412 services 20652 4012   - Currency: NGN
+INFO 2025-09-13 13:10:31,412 services 20652 4012 === END DEBUG ===
+INFO 2025-09-13 13:10:32,625 services 20652 4012 Flutterwave payment response for order ORD-CF4C7F86: {'status': 'success', 'message': 'Hosted Link', 'data': {'link_available': True}}
+INFO 2025-09-13 13:11:23,519 services 20652 4012 Verifying Flutterwave transaction: 9642416
+INFO 2025-09-13 13:11:24,290 services 20652 4012 Flutterwave verification response for 9642416: status=success
+INFO 2025-09-13 13:11:32,412 models 20652 4012 Cleared 0 items from cart for user decarkson@gmail.com
+INFO 2025-09-13 13:11:32,413 models 20652 4012 Payment d40529c1-b1bc-4e3e-aee6-56cc25df7f75 marked as successful for order ORD-CF4C7F86
+ERROR 2025-09-13 13:11:32,483 views 20652 4012 Callback verification error: 'NoneType' object has no attribute 'group_send'

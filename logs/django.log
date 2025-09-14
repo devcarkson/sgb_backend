@@ -7648,3 +7648,401 @@ INFO 2025-08-23 09:41:26,559 basehttp 9856 18060 "POST /api/auth/token/refresh/ 
 INFO 2025-08-23 09:46:27,570 basehttp 9856 14916 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
 INFO 2025-08-23 09:51:28,610 basehttp 9856 18220 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
 INFO 2025-08-23 09:56:29,523 basehttp 9856 15244 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
+INFO 2025-09-12 07:09:33,069 autoreload 16176 13264 Watching for file changes with StatReloader
+INFO 2025-09-12 07:09:51,444 basehttp 16176 4716 "GET /admin/orders/order/33/change/ HTTP/1.1" 302 0
+INFO 2025-09-12 07:09:51,541 basehttp 16176 4716 "GET /admin/login/?next=/admin/orders/order/33/change/ HTTP/1.1" 200 3085
+INFO 2025-09-12 07:09:57,019 basehttp 16176 4716 "POST /admin/login/?next=/admin/orders/order/33/change/ HTTP/1.1" 302 0
+INFO 2025-09-12 07:09:57,041 basehttp 16176 4716 "GET /admin/orders/order/33/change/ HTTP/1.1" 302 0
+INFO 2025-09-12 07:09:57,093 basehttp 16176 4716 "GET /admin/ HTTP/1.1" 200 41410
+INFO 2025-09-12 07:10:16,424 basehttp 16176 4716 "GET /admin/orders/order/ HTTP/1.1" 200 37666
+INFO 2025-09-12 07:10:16,484 basehttp 16176 4716 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-12 07:10:31,167 basehttp 16176 4716 "POST /admin/orders/order/ HTTP/1.1" 200 33505
+INFO 2025-09-12 07:10:34,088 basehttp 16176 4716 "POST /admin/orders/order/ HTTP/1.1" 302 0
+INFO 2025-09-12 07:10:34,127 basehttp 16176 4716 "GET /admin/orders/order/ HTTP/1.1" 200 21635
+INFO 2025-09-12 07:10:51,658 basehttp 16176 16900 "POST /api/auth/login/ HTTP/1.1" 200 695
+WARNING 2025-09-12 07:10:51,725 log 16176 16900 Unauthorized: /api/products/wishlist/
+WARNING 2025-09-12 07:10:51,726 basehttp 16176 16900 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-12 07:10:51,833 basehttp 16176 1716 "GET /api/products/?page_size=6 HTTP/1.1" 200 3992
+INFO 2025-09-12 07:10:51,856 basehttp 16176 16900 "GET /api/orders/cart/ HTTP/1.1" 200 4937
+INFO 2025-09-12 07:10:52,565 basehttp 16176 1716 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
+INFO 2025-09-12 07:10:52,576 basehttp 16176 1716 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-12 07:10:58,262 basehttp 16176 1716 "GET /api/orders/orders/ HTTP/1.1" 200 2
+WARNING 2025-09-12 07:10:58,745 log 16176 1716 Unauthorized: /api/products/wishlist/
+WARNING 2025-09-12 07:10:58,747 basehttp 16176 1716 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-12 07:10:59,145 basehttp 16176 1716 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
+INFO 2025-09-12 07:10:59,159 basehttp 16176 1716 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-12 07:11:03,299 basehttp 16176 1716 "GET /media/CACHE/images/products/20250710_222318/5f3e81483826114946abab620e261aa0.jpg HTTP/1.1" 200 15690
+INFO 2025-09-12 07:11:05,993 basehttp 16176 7732 "OPTIONS /api/orders/cart/items/51/ HTTP/1.1" 200 0
+ERROR 2025-09-12 07:11:06,588 log 16176 1716 Internal Server Error: /api/orders/cart/items/51/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\generics.py", line 295, in delete
+    return self.destroy(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\mixins.py", line 91, in destroy
+    self.perform_destroy(instance)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 89, in perform_destroy
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(self.request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-12 07:11:06,610 basehttp 16176 1716 "DELETE /api/orders/cart/items/51/ HTTP/1.1" 500 126137
+WARNING 2025-09-12 07:11:20,584 log 16176 16900 Unauthorized: /api/products/wishlist/
+WARNING 2025-09-12 07:11:20,588 basehttp 16176 16900 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-12 07:11:20,608 basehttp 16176 1716 "GET /api/products/categories/ HTTP/1.1" 200 1044
+INFO 2025-09-12 07:11:20,657 basehttp 16176 12208 "GET /api/products/featured/ HTTP/1.1" 200 3937
+INFO 2025-09-12 07:11:20,674 basehttp 16176 10456 "GET /api/products/new_arrival/ HTTP/1.1" 200 5948
+INFO 2025-09-12 07:11:20,743 basehttp 16176 16900 "GET /api/products/?page=1 HTTP/1.1" 200 7287
+INFO 2025-09-12 07:11:21,639 basehttp 16176 1716 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
+INFO 2025-09-12 07:11:21,677 basehttp 16176 1716 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-12 07:11:30,105 basehttp 16176 7732 "OPTIONS /api/auth/logout/ HTTP/1.1" 200 0
+WARNING 2025-09-12 07:11:30,144 log 16176 1716 Not Found: /api/auth/logout/
+WARNING 2025-09-12 07:11:30,145 basehttp 16176 1716 "POST /api/auth/logout/ HTTP/1.1" 404 6480
+INFO 2025-09-12 07:11:48,602 basehttp 16176 5104 "GET /api/products/?page=1 HTTP/1.1" 200 7287
+INFO 2025-09-12 07:11:48,602 basehttp 16176 1716 "GET /api/products/categories/ HTTP/1.1" 200 1044
+INFO 2025-09-12 07:11:48,603 basehttp 16176 12208 "GET /api/products/?page_size=6 HTTP/1.1" 200 3992
+INFO 2025-09-12 07:11:48,604 basehttp 16176 10456 "GET /api/products/new_arrival/ HTTP/1.1" 200 5948
+INFO 2025-09-12 07:11:48,604 basehttp 16176 16900 "GET /api/products/featured/ HTTP/1.1" 200 3937
+INFO 2025-09-12 07:11:56,402 basehttp 16176 10456 "POST /api/auth/login/ HTTP/1.1" 200 695
+WARNING 2025-09-12 07:11:56,440 log 16176 10456 Unauthorized: /api/products/wishlist/
+WARNING 2025-09-12 07:11:56,441 basehttp 16176 10456 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-12 07:11:56,985 basehttp 16176 10456 "POST /api/auth/token/refresh/ HTTP/1.1" 200 486
+INFO 2025-09-12 07:11:56,999 basehttp 16176 10456 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-12 07:12:02,655 basehttp 16176 10456 "GET /api/auth/addresses/ HTTP/1.1" 200 1337
+INFO 2025-09-12 07:13:16,004 basehttp 16176 10456 "POST /api/orders/checkout/ HTTP/1.1" 201 2716
+INFO 2025-09-12 07:15:03,836 basehttp 16176 4716 "GET /admin/orders/order/ HTTP/1.1" 200 26201
+INFO 2025-09-12 07:15:06,521 basehttp 16176 4716 "GET /admin/orders/order/21/change/ HTTP/1.1" 200 74166
+INFO 2025-09-12 07:15:16,976 basehttp 16176 4716 "POST /admin/orders/order/21/change/ HTTP/1.1" 302 0
+INFO 2025-09-12 07:15:17,014 basehttp 16176 4716 "GET /admin/orders/order/ HTTP/1.1" 200 26778
+INFO 2025-09-12 07:15:17,067 basehttp 16176 4716 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-12 07:15:36,819 basehttp 16176 4716 "GET /admin/orders/order/?o=4.-6 HTTP/1.1" 200 26776
+INFO 2025-09-13 12:57:29,360 basehttp 16176 19956 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-09-13 12:57:29,391 basehttp 16176 19956 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3062
+INFO 2025-09-13 12:57:38,061 basehttp 16176 19956 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-09-13 12:57:38,228 basehttp 16176 19956 "GET /admin/ HTTP/1.1" 200 44044
+INFO 2025-09-13 12:57:53,547 basehttp 16176 19956 "GET /admin/accounts/user/ HTTP/1.1" 200 26249
+INFO 2025-09-13 12:57:54,029 basehttp 16176 19956 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-13 13:02:37,814 autoreload 20652 16416 Watching for file changes with StatReloader
+INFO 2025-09-13 13:03:16,616 basehttp 20652 20484 "GET /admin/ HTTP/1.1" 200 44044
+INFO 2025-09-13 13:03:26,791 basehttp 20652 20484 "GET /admin/orders/order/ HTTP/1.1" 200 21136
+INFO 2025-09-13 13:03:27,027 basehttp 20652 20484 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-13 13:03:42,494 basehttp 20652 20484 "GET /admin/payments/payment/ HTTP/1.1" 200 23216
+INFO 2025-09-13 13:03:48,678 basehttp 20652 20484 "GET /admin/orders/order/ HTTP/1.1" 200 21136
+INFO 2025-09-13 13:03:54,857 basehttp 20652 20484 "GET /admin/products/category/ HTTP/1.1" 200 25219
+INFO 2025-09-13 13:04:02,441 basehttp 20652 20484 "GET /admin/products/product/ HTTP/1.1" 200 91340
+INFO 2025-09-13 13:05:23,800 basehttp 20652 20484 "GET /admin/accounts/user/ HTTP/1.1" 200 26249
+INFO 2025-09-13 13:06:15,204 basehttp 20652 20484 "GET /admin/accounts/user/4/change/ HTTP/1.1" 200 42853
+INFO 2025-09-13 13:06:15,683 basehttp 20652 15712 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+INFO 2025-09-13 13:06:15,685 basehttp 20652 20484 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-09-13 13:06:18,700 basehttp 20652 20484 "GET /admin/accounts/user/4/delete/ HTTP/1.1" 200 18163
+INFO 2025-09-13 13:06:22,850 basehttp 20652 20484 "POST /admin/accounts/user/4/delete/ HTTP/1.1" 302 0
+INFO 2025-09-13 13:06:22,991 basehttp 20652 20484 "GET /admin/accounts/user/ HTTP/1.1" 200 26116
+INFO 2025-09-13 13:08:37,408 basehttp 20652 11680 "GET /api/products/categories/ HTTP/1.1" 200 1044
+INFO 2025-09-13 13:08:37,785 basehttp 20652 21380 "GET /api/products/?page=1 HTTP/1.1" 200 8468
+INFO 2025-09-13 13:08:37,786 basehttp 20652 6656 "GET /api/products/new_arrival/ HTTP/1.1" 200 8478
+INFO 2025-09-13 13:08:37,793 basehttp 20652 13444 "GET /api/products/featured/ HTTP/1.1" 200 8263
+INFO 2025-09-13 13:08:47,979 basehttp 20652 20880 "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:08:52,407 basehttp 20652 13444 "POST /api/auth/login/ HTTP/1.1" 200 677
+INFO 2025-09-13 13:08:52,534 basehttp 20652 20880 "OPTIONS /api/orders/cart/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:08:52,546 basehttp 20652 13444 "GET /media/CACHE/images/products/20250715_012209/6a7adb74afaa5ba81d82a90acf5c768c.jpg HTTP/1.1" 200 15681
+INFO 2025-09-13 13:08:52,601 basehttp 20652 6656 "GET /media/CACHE/images/products/20250715_011707/5f49dffeb97202c3f101d4d6412f7937.jpg HTTP/1.1" 200 16256
+INFO 2025-09-13 13:08:52,602 basehttp 20652 21380 "GET /media/CACHE/images/products/20250715_010357/6d2212b7178a260a1bfd37f2e99d4847.jpg HTTP/1.1" 200 15116
+INFO 2025-09-13 13:08:52,611 basehttp 20652 4012 "GET /media/CACHE/images/products/20250715_022008/2a907c80b7d52e571033ed59ea095588.jpg HTTP/1.1" 200 16670
+INFO 2025-09-13 13:08:52,611 basehttp 20652 11680 "GET /media/CACHE/images/products/20250715_032259/c097099380e3eeeeb8f48d803a1178b7.jpg HTTP/1.1" 200 14926
+WARNING 2025-09-13 13:08:52,674 log 20652 13444 Unauthorized: /api/products/wishlist/
+WARNING 2025-09-13 13:08:52,679 basehttp 20652 13444 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-13 13:08:52,679 basehttp 20652 6656 "GET /api/products/?page_size=6 HTTP/1.1" 200 4324
+INFO 2025-09-13 13:08:52,688 basehttp 20652 20880 "OPTIONS /api/auth/token/refresh/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:08:52,705 basehttp 20652 13444 "GET /api/orders/cart/ HTTP/1.1" 200 262
+INFO 2025-09-13 13:08:52,958 basehttp 20652 4012 "GET /media/CACHE/images/products/20250715_023905/9dfa5c72dc3e2b2c964a4dc60960b279.jpg HTTP/1.1" 200 18289
+INFO 2025-09-13 13:08:53,330 basehttp 20652 6656 "GET /media/CACHE/images/products/20250721_111957/330746f672ce8441cc16eacdac218a0e.jpg HTTP/1.1" 200 15870
+INFO 2025-09-13 13:08:53,667 basehttp 20652 6656 "GET /media/CACHE/images/products/20250715_033151/8f4ed7bd0f5b180b4c94f24406255be2.jpg HTTP/1.1" 200 17776
+INFO 2025-09-13 13:08:53,668 basehttp 20652 13444 "GET /media/CACHE/images/products/20250715_033458/f0ab77d497be898d325a682ac1e99d45.jpg HTTP/1.1" 200 15493
+INFO 2025-09-13 13:08:53,671 basehttp 20652 4012 "GET /media/CACHE/images/products/20250715_032925/225d2de79795b7c5075c17b27676a461.jpg HTTP/1.1" 200 16517
+INFO 2025-09-13 13:08:53,788 basehttp 20652 21380 "GET /media/CACHE/images/products/20250714_140208/aaa16eb045e713f601d8b73923b324f0.jpg HTTP/1.1" 200 19390
+INFO 2025-09-13 13:08:53,874 basehttp 20652 13444 "GET /media/CACHE/images/products/20250715_034504/9f802d6ed9ad920350c39e0cb6c6870d.jpg HTTP/1.1" 200 16093
+INFO 2025-09-13 13:08:53,882 basehttp 20652 4012 "GET /media/CACHE/images/products/20250715_033905/9521f416b09fb9d30fee48b2655c8fad.jpg HTTP/1.1" 200 13444
+INFO 2025-09-13 13:08:54,547 basehttp 20652 17852 "POST /api/auth/token/refresh/ HTTP/1.1" 200 483
+INFO 2025-09-13 13:08:54,564 basehttp 20652 20880 "OPTIONS /api/products/wishlist/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:08:54,601 basehttp 20652 17852 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-13 13:09:10,184 basehttp 20652 17852 "GET /api/products/?ordering=name&page=1 HTTP/1.1" 200 7739
+INFO 2025-09-13 13:09:10,446 basehttp 20652 17852 "GET /media/CACHE/images/products/20250715_040647/b885363f8a5c566855f15b8773f3b35b.jpg HTTP/1.1" 200 15365
+INFO 2025-09-13 13:09:11,829 basehttp 20652 17852 "GET /api/products/adorn/ HTTP/1.1" 200 1292
+INFO 2025-09-13 13:09:11,874 basehttp 20652 4012 "GET /api/products/adorn/reviews/ HTTP/1.1" 200 2
+INFO 2025-09-13 13:09:13,659 basehttp 20652 20880 "OPTIONS /api/orders/cart/items/ HTTP/1.1" 200 0
+ERROR 2025-09-13 13:09:14,982 log 20652 4012 Internal Server Error: /api/orders/cart/items/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\generics.py", line 194, in post
+    return self.create(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 64, in create
+    cart_item = self.perform_create(serializer)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 52, in perform_create
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(self.request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:09:15,010 basehttp 20652 4012 "POST /api/orders/cart/items/ HTTP/1.1" 500 133332
+INFO 2025-09-13 13:09:22,127 basehttp 20652 17852 "GET /api/products/tinblend/reviews/ HTTP/1.1" 200 2
+INFO 2025-09-13 13:09:22,808 basehttp 20652 4012 "GET /api/products/tinblend/ HTTP/1.1" 200 1457
+INFO 2025-09-13 13:09:22,910 basehttp 20652 4012 "GET /media/CACHE/images/products/20250715_022008/a8657348c75f84ec3ab9b721c3171165.jpg HTTP/1.1" 200 45976
+ERROR 2025-09-13 13:09:25,831 log 20652 4012 Internal Server Error: /api/orders/cart/items/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\generics.py", line 194, in post
+    return self.create(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 64, in create
+    cart_item = self.perform_create(serializer)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 52, in perform_create
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(self.request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:09:25,838 basehttp 20652 4012 "POST /api/orders/cart/items/ HTTP/1.1" 500 134786
+INFO 2025-09-13 13:09:31,360 basehttp 20652 20880 "OPTIONS /api/auth/addresses/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:09:31,375 basehttp 20652 4012 "GET /api/auth/addresses/ HTTP/1.1" 200 2
+INFO 2025-09-13 13:10:31,208 basehttp 20652 20880 "OPTIONS /api/orders/checkout/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:10:33,024 basehttp 20652 4012 "POST /api/orders/checkout/ HTTP/1.1" 201 2654
+WARNING 2025-09-13 13:11:23,503 log 20652 4012 Unauthorized: /api/products/wishlist/
+INFO 2025-09-13 13:11:23,504 basehttp 20652 20880 "OPTIONS /api/payments/callback/?tx_ref=d40529c1-b1bc-4e3e-aee6-56cc25df7f75&transaction_id=9642416&status=successful HTTP/1.1" 200 0
+WARNING 2025-09-13 13:11:23,505 basehttp 20652 4012 "GET /api/products/wishlist/ HTTP/1.1" 401 58
+INFO 2025-09-13 13:11:23,955 basehttp 20652 20880 "OPTIONS /api/payments/status/d40529c1-b1bc-4e3e-aee6-56cc25df7f75/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:11:25,971 basehttp 20652 17852 "POST /api/auth/token/refresh/ HTTP/1.1" 200 483
+INFO 2025-09-13 13:11:26,151 basehttp 20652 17852 "GET /api/products/wishlist/ HTTP/1.1" 200 2
+INFO 2025-09-13 13:11:26,242 basehttp 20652 13444 "GET /api/payments/status/d40529c1-b1bc-4e3e-aee6-56cc25df7f75/ HTTP/1.1" 200 4093
+INFO 2025-09-13 13:11:26,268 basehttp 20652 20880 "OPTIONS /api/orders/cart/clear/ HTTP/1.1" 200 0
+INFO 2025-09-13 13:11:26,664 basehttp 20652 17852 "GET /api/payments/status/d40529c1-b1bc-4e3e-aee6-56cc25df7f75/ HTTP/1.1" 200 4093
+ERROR 2025-09-13 13:11:26,847 log 20652 13444 Internal Server Error: /api/orders/cart/clear/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 302, in post
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:11:26,906 basehttp 20652 13444 "POST /api/orders/cart/clear/ HTTP/1.1" 500 116444
+INFO 2025-09-13 13:11:27,058 basehttp 20652 21380 "GET /api/payments/status/d40529c1-b1bc-4e3e-aee6-56cc25df7f75/ HTTP/1.1" 200 4093
+ERROR 2025-09-13 13:11:27,122 log 20652 17852 Internal Server Error: /api/orders/cart/clear/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 302, in post
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:11:27,139 basehttp 20652 17852 "POST /api/orders/cart/clear/ HTTP/1.1" 500 116414
+ERROR 2025-09-13 13:11:27,209 log 20652 21380 Internal Server Error: /api/orders/cart/clear/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 302, in post
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:11:27,217 basehttp 20652 21380 "POST /api/orders/cart/clear/ HTTP/1.1" 500 116414
+INFO 2025-09-13 13:11:32,561 basehttp 20652 4012 "GET /api/payments/callback/?tx_ref=d40529c1-b1bc-4e3e-aee6-56cc25df7f75&transaction_id=9642416&status=successful HTTP/1.1" 200 4118
+ERROR 2025-09-13 13:11:32,715 log 20652 4012 Internal Server Error: /api/orders/cart/clear/
+Traceback (most recent call last):
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CARKSON\Desktop\SGB\env\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\orders\views.py", line 302, in post
+    broadcast_realtime_update(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        user_id=str(request.user.id),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        }
+        ^
+    )
+    ^
+  File "C:\Users\CARKSON\Pictures\SGB\sgb_backend\payments\realtime.py", line 10, in broadcast_realtime_update
+    async_to_sync(channel_layer.group_send)(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group_send'
+ERROR 2025-09-13 13:11:32,721 basehttp 20652 4012 "POST /api/orders/cart/clear/ HTTP/1.1" 500 116414
+INFO 2025-09-13 13:11:53,904 basehttp 20652 13492 "GET /admin/orders/order/ HTTP/1.1" 200 26203
+INFO 2025-09-13 13:11:54,131 basehttp 20652 13492 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-13 13:15:34,747 basehttp 20652 13492 "GET /admin/orders/order/3/change/ HTTP/1.1" 200 76353
+INFO 2025-09-13 13:15:48,724 basehttp 20652 13492 "POST /admin/orders/order/3/change/ HTTP/1.1" 302 0
+INFO 2025-09-13 13:15:48,814 basehttp 20652 13492 "GET /admin/orders/order/ HTTP/1.1" 200 26773
+INFO 2025-09-13 13:16:24,747 basehttp 20652 4012 "POST /api/auth/token/refresh/ HTTP/1.1" 200 483
+INFO 2025-09-13 13:21:25,871 basehttp 20652 18792 "POST /api/auth/token/refresh/ HTTP/1.1" 200 483
+INFO 2025-09-13 13:38:21,305 autoreload 9860 4016 Watching for file changes with StatReloader
+INFO 2025-09-13 13:48:32,039 basehttp 9860 18676 "GET /admin/orders/order/3/change/ HTTP/1.1" 200 76353
+INFO 2025-09-13 13:48:32,237 basehttp 9860 18676 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-09-14 07:10:28,998 autoreload 13556 16988 Watching for file changes with StatReloader
